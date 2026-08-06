@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI工作站 - 提示詞庫</title>
-  
+  <title>AI工作站 | 提示詞庫</title>
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
+
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Google Fonts: Noto Sans TC -->
+
+  <!-- Google Fonts: Noto Serif TC (標題／顯示) + Noto Sans TC (內文) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
@@ -22,19 +22,18 @@
         extend: {
           fontFamily: {
             sans: ['"Noto Sans TC"', 'sans-serif'],
+            serif: ['"Noto Serif TC"', 'serif'],
           },
           colors: {
-            brand: {
-              50: '#f5f3ff',
-              100: '#ede9fe',
-              500: '#8b5cf6',
-              600: '#7c3aed',
-              700: '#6d28d9',
+            ink: '#14181f',
+            navy: '#1c2438',
+            paper: '#f6f4ee',
+            gold: {
+              DEFAULT: '#a9812f',
+              light: '#c9a75a',
+              tint: '#f4ecd8',
             },
-            accent: {
-              400: '#f472b6',
-              500: '#ec4899',
-            }
+            line: '#e4ddce',
           }
         }
       }
@@ -42,57 +41,111 @@
   </script>
 
   <style>
+    :root {
+      --color-ink: #14181f;
+      --color-navy: #1c2438;
+      --color-paper: #f6f4ee;
+      --color-card: #ffffff;
+      --color-gold: #a9812f;
+      --color-gold-light: #c9a75a;
+      --color-gold-tint: #f4ecd8;
+      --color-line: #e4ddce;
+      --color-text: #2a2d33;
+      --color-text-mute: #6b6f76;
+    }
+
+    body { background: var(--color-paper); }
+
+    .eyebrow {
+      font-family: 'Noto Sans TC', sans-serif;
+      letter-spacing: 0.14em;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .case-no {
+      font-family: 'Noto Serif TC', serif;
+      font-variant-numeric: tabular-nums;
+    }
+
     /* Custom scrollbar for prompt cards */
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 4px;
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #f1efe8; border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cfc6ad; border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #a9812f; }
+
+    .nav-tab-underline {
+      position: relative;
     }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 4px;
+    .nav-tab-underline::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: -1px;
+      height: 2px;
+      background: var(--color-gold);
+      transform: scaleX(0);
+      transition: transform .2s ease;
     }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 4px;
+    .nav-tab-underline.active::after { transform: scaleX(1); }
+
+    .prompt-card {
+      transition: box-shadow .2s ease, transform .2s ease, border-color .2s ease;
+      border-color: var(--color-line);
     }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
+    .prompt-card:hover {
+      box-shadow: 0 10px 30px -12px rgba(20,24,31,0.18);
+      border-color: var(--color-gold-light);
+    }
+    .prompt-card .accent-bar {
+      transform: scaleY(0);
+      transition: transform .2s ease;
+      transform-origin: top;
+    }
+    .prompt-card:hover .accent-bar { transform: scaleY(1); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.001ms !important; animation-duration: 0.001ms !important; }
     }
   </style>
 </head>
-<body class="bg-[#f4f5f9] text-gray-800 font-sans min-h-screen pb-12 antialiased selection:bg-purple-100 selection:text-purple-700">
+<body class="bg-paper text-[color:var(--color-text)] font-sans min-h-screen pb-12 antialiased selection:bg-gold-tint selection:text-ink">
 
   <!-- Top Navigation Header -->
-  <header class="bg-white border-b border-gray-100 sticky top-0 z-30 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      
-      <!-- Brand Logo -->
-      <div class="flex items-center gap-2">
-        <span class="text-2xl">🚀</span>
-        <h1 class="text-xl font-bold bg-gradient-to-r from-purple-700 to-indigo-600 bg-clip-text text-transparent">
-          AI工作站
-        </h1>
+  <header class="bg-white border-b border-line sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+
+      <!-- Brand Mark -->
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-sm bg-ink flex items-center justify-center shrink-0">
+          <span class="text-gold-light font-serif font-bold text-sm">AI</span>
+        </div>
+        <div class="leading-tight">
+          <h1 class="text-lg font-serif font-bold text-ink tracking-tight">AI 工作站</h1>
+          <p class="eyebrow text-gold uppercase">Prompt Advisory Library</p>
+        </div>
       </div>
 
       <!-- Navigation Tabs -->
-      <nav class="hidden md:flex items-center gap-2 bg-gray-100/80 p-1 rounded-2xl border border-gray-200/60">
-        <button class="nav-tab active flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 bg-brand-600 text-white shadow-sm" data-tab="single">
-          <i class="fa-regular fa-folder-closed"></i>
+      <nav class="hidden md:flex items-center gap-8 h-full" id="mainNav">
+        <button class="nav-tab nav-tab-underline active h-full flex items-center gap-2 text-sm font-semibold text-ink" data-tab="single">
+          <i class="fa-regular fa-folder-closed text-gold"></i>
           單項提示詞
         </button>
-        <button class="nav-tab flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-200/50 transition-all duration-200" data-tab="flow">
-          <i class="fa-solid fa-bolt text-amber-500"></i>
+        <button class="nav-tab nav-tab-underline h-full flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-ink transition-colors" data-tab="flow">
+          <i class="fa-solid fa-bolt text-gold"></i>
           流程提示詞
         </button>
-        <button class="nav-tab flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-200/50 transition-all duration-200" data-tab="files">
-          <i class="fa-solid fa-folder-minus"></i>
+        <button class="nav-tab nav-tab-underline h-full flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-ink transition-colors" data-tab="files">
+          <i class="fa-solid fa-folder-minus text-gold"></i>
           工作流檔案
         </button>
       </nav>
 
       <!-- Sync Status & Sheet Reload Button -->
-      <div class="flex items-center gap-2">
-        <button id="syncBtn" onclick="fetchGoogleSheetData()" class="flex items-center gap-1.5 text-xs text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 px-3 py-1.5 rounded-xl transition font-medium">
-          <i id="syncIcon" class="fa-solid fa-rotate text-purple-600"></i>
+      <div class="flex items-center gap-3">
+        <span id="lastSynced" class="hidden sm:inline text-xs text-gray-400"></span>
+        <button id="syncBtn" onclick="fetchGoogleSheetData(true)" class="flex items-center gap-2 text-xs text-ink bg-white hover:bg-gold-tint border border-line hover:border-gold-light px-3.5 py-2 rounded-sm transition font-medium">
+          <i id="syncIcon" class="fa-solid fa-rotate text-gold"></i>
           <span id="syncStatus">同步 Sheet 資料</span>
         </button>
       </div>
@@ -100,24 +153,24 @@
   </header>
 
   <!-- Main Container -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-5">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
 
     <!-- Search Bar Input -->
-    <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-sm flex items-center gap-3">
+    <div class="bg-white rounded-sm p-1 border border-line flex items-center gap-3">
       <div class="pl-3 text-gray-400">
-        <i class="fa-solid fa-magnifying-glass text-lg"></i>
+        <i class="fa-solid fa-magnifying-glass text-base"></i>
       </div>
-      <input 
-        type="text" 
+      <input
+        type="text"
         id="searchInput"
-        placeholder="搜尋提示詞名稱、任務或內容關鍵字..." 
-        class="w-full bg-transparent border-none text-gray-700 placeholder-gray-400 focus:outline-none text-base py-1.5"
+        placeholder="搜尋提示詞名稱、任務或內容關鍵字..."
+        class="w-full bg-transparent border-none text-[color:var(--color-text)] placeholder-gray-400 focus:outline-none text-sm py-2.5"
         oninput="handleFilterChange()"
       >
-      <button 
+      <button
         id="clearSearch"
         onclick="clearSearchInput()"
-        class="hidden text-gray-400 hover:text-gray-600 px-2"
+        class="hidden text-gray-400 hover:text-ink px-3"
         title="清除搜尋"
       >
         <i class="fa-solid fa-xmark"></i>
@@ -125,47 +178,39 @@
     </div>
 
     <!-- Filter Control Board -->
-    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm space-y-4">
-      
+    <div class="bg-white rounded-sm p-6 border border-line space-y-5">
+
       <!-- 主軸 Filter -->
-      <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-        <span class="text-sm font-medium text-gray-400 w-16 shrink-0">主軸</span>
-        <div class="flex flex-wrap gap-2 items-center" id="categoryFilterGroup">
-          <!-- Dynamically generated category pills -->
-        </div>
+      <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-5">
+        <span class="eyebrow text-gray-400 uppercase w-16 shrink-0">主軸</span>
+        <div class="flex flex-wrap gap-2 items-center" id="categoryFilterGroup"></div>
       </div>
 
-      <hr class="border-gray-100">
+      <hr class="border-line">
 
       <!-- 模式 Filter -->
-      <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-        <span class="text-sm font-medium text-gray-400 w-16 shrink-0">模式</span>
-        <div class="flex flex-wrap gap-2 items-center" id="modeFilterGroup">
-          <!-- Dynamically generated mode pills -->
-        </div>
+      <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-5">
+        <span class="eyebrow text-gray-400 uppercase w-16 shrink-0">模式</span>
+        <div class="flex flex-wrap gap-2 items-center" id="modeFilterGroup"></div>
       </div>
 
-      <hr class="border-gray-100">
+      <hr class="border-line">
 
       <!-- AI工具 Filter -->
-      <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-        <span class="text-sm font-medium text-gray-400 w-16 shrink-0">AI工具</span>
-        <div class="flex flex-wrap gap-2 items-center" id="toolFilterGroup">
-          <!-- Dynamically generated AI Tool pills -->
-        </div>
+      <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-5">
+        <span class="eyebrow text-gray-400 uppercase w-16 shrink-0">AI 工具</span>
+        <div class="flex flex-wrap gap-2 items-center" id="toolFilterGroup"></div>
       </div>
 
     </div>
 
     <!-- Prompt Items Counter -->
     <div class="flex items-center justify-between pt-1 px-1">
-      <p class="text-sm font-semibold text-purple-900/70" id="promptCount">
-        共 <span class="text-purple-700 font-bold" id="countNumber">0</span> 個提示詞
+      <p class="text-sm font-medium text-gray-500" id="promptCount">
+        共 <span class="text-ink font-semibold case-no" id="countNumber">0</span> 份提示詞檔案
       </p>
-      
-      <!-- View mode toggle or indicator -->
-      <div class="text-xs text-gray-400">
-        <i class="fa-regular fa-clock mr-1"></i>實時更新
+      <div class="eyebrow text-gray-400 uppercase">
+        <i class="fa-regular fa-clock mr-1"></i>Live Sync
       </div>
     </div>
 
@@ -176,16 +221,18 @@
 
     <!-- Loading Placeholder -->
     <div id="loadingSpinner" class="hidden py-16 text-center">
-      <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-purple-500 border-t-transparent"></div>
+      <div class="inline-block animate-spin rounded-full h-9 w-9 border-2 border-gold border-t-transparent"></div>
       <p class="mt-3 text-sm text-gray-500 font-medium">正在讀取 Google Sheet 資料...</p>
     </div>
 
     <!-- Empty State -->
-    <div id="emptyState" class="hidden bg-white rounded-2xl p-12 text-center border border-gray-100 shadow-sm">
-      <div class="text-4xl mb-3">🔍</div>
-      <h3 class="text-lg font-bold text-gray-700 mb-1">未找到符合條件的提示詞</h3>
-      <p class="text-sm text-gray-400 mb-4">請嘗試更換搜尋關鍵字或調整篩選條件</p>
-      <button onclick="resetAllFilters()" class="text-sm bg-purple-100 hover:bg-purple-200 text-purple-700 px-4 py-2 rounded-xl font-medium transition">
+    <div id="emptyState" class="hidden bg-white rounded-sm p-14 text-center border border-line">
+      <div class="w-10 h-10 mx-auto mb-4 rounded-sm bg-ink flex items-center justify-center">
+        <i class="fa-solid fa-magnifying-glass text-gold-light text-sm"></i>
+      </div>
+      <h3 class="text-lg font-serif font-bold text-ink mb-1">未找到符合條件的提示詞</h3>
+      <p class="text-sm text-gray-400 mb-5">請嘗試更換搜尋關鍵字或調整篩選條件</p>
+      <button onclick="resetAllFilters()" class="text-sm bg-ink hover:bg-navy text-gold-light px-5 py-2.5 rounded-sm font-medium transition">
         重置所有篩選
       </button>
     </div>
@@ -193,35 +240,35 @@
   </main>
 
   <!-- Prompt Detail / Edit Modal -->
-  <div id="promptModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200">
-    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden transform scale-95 transition-transform duration-200" id="modalContainer">
-      
+  <div id="promptModal" class="fixed inset-0 bg-ink/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200">
+    <div class="bg-white rounded-sm max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden transform scale-95 transition-transform duration-200" id="modalContainer">
+
       <!-- Modal Header -->
-      <div class="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+      <div class="p-6 border-b border-line flex items-center justify-between bg-paper">
         <div>
-          <div id="modalCategory" class="text-xs text-gray-400 font-medium"></div>
-          <h2 id="modalTitle" class="text-xl font-bold text-gray-800"></h2>
+          <div id="modalCategory" class="eyebrow text-gold uppercase mb-1"></div>
+          <h2 id="modalTitle" class="text-xl font-serif font-bold text-ink"></h2>
         </div>
-        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-gray-200/60 text-gray-500 hover:bg-gray-200 hover:text-gray-800 flex items-center justify-center transition">
-          <i class="fa-solid fa-xmark text-lg"></i>
+        <button onclick="closeModal()" class="w-8 h-8 rounded-sm bg-white border border-line text-gray-500 hover:text-ink hover:border-gold-light flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark text-base"></i>
         </button>
       </div>
 
       <!-- Modal Tags -->
-      <div id="modalTags" class="px-5 py-3 border-b border-gray-100 flex flex-wrap gap-1.5 bg-white"></div>
+      <div id="modalTags" class="px-6 py-4 border-b border-line flex flex-wrap gap-1.5 bg-white"></div>
 
       <!-- Modal Body Text -->
-      <div class="p-5 overflow-y-auto flex-1 custom-scrollbar">
-        <label class="block text-xs font-semibold text-gray-400 mb-2">提示詞全文內容：</label>
-        <textarea id="modalContent" rows="12" class="w-full p-4 border border-gray-200 rounded-xl bg-gray-50 text-gray-700 text-sm leading-relaxed focus:ring-2 focus:ring-purple-500 focus:outline-none font-sans whitespace-pre-wrap"></textarea>
+      <div class="p-6 overflow-y-auto flex-1 custom-scrollbar">
+        <label class="block eyebrow text-gray-400 uppercase mb-2">提示詞全文內容</label>
+        <textarea id="modalContent" rows="12" class="w-full p-4 border border-line rounded-sm bg-paper text-[color:var(--color-text)] text-sm leading-relaxed focus:ring-1 focus:ring-gold focus:border-gold focus:outline-none font-sans whitespace-pre-wrap"></textarea>
       </div>
 
       <!-- Modal Footer -->
-      <div class="p-4 border-t border-gray-100 bg-gray-50/50 flex items-center justify-end gap-3">
-        <button onclick="closeModal()" class="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-200/60 rounded-xl transition">
+      <div class="p-5 border-t border-line bg-paper flex items-center justify-end gap-3">
+        <button onclick="closeModal()" class="px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-ink hover:bg-white rounded-sm transition">
           關閉
         </button>
-        <button id="modalCopyBtn" onclick="copyModalPrompt()" class="px-5 py-2 text-sm font-medium bg-brand-600 hover:bg-brand-700 text-white rounded-xl shadow-sm flex items-center gap-2 transition">
+        <button id="modalCopyBtn" onclick="copyModalPrompt()" class="px-5 py-2.5 text-sm font-medium bg-ink hover:bg-navy text-gold-light rounded-sm flex items-center gap-2 transition">
           <i class="fa-regular fa-copy"></i> 複製 Prompt
         </button>
       </div>
@@ -230,8 +277,8 @@
   </div>
 
   <!-- Toast Notification -->
-  <div id="toast" class="fixed bottom-6 right-6 bg-gray-900 text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 transform translate-y-10 opacity-0 transition-all duration-300 z-50 pointer-events-none">
-    <div class="w-7 h-7 bg-green-500/20 text-green-400 rounded-lg flex items-center justify-center">
+  <div id="toast" class="fixed bottom-6 right-6 bg-ink text-white px-4 py-3 rounded-sm shadow-lg flex items-center gap-3 transform translate-y-10 opacity-0 transition-all duration-300 z-50 pointer-events-none">
+    <div class="w-7 h-7 bg-gold/20 text-gold-light rounded-sm flex items-center justify-center shrink-0">
       <i class="fa-solid fa-check text-sm"></i>
     </div>
     <span id="toastMsg" class="text-sm font-medium">Prompt 已成功複製到剪貼簿！</span>
@@ -241,10 +288,27 @@
     // ==========================================
     // DATA STATE & CONSTANTS
     // ==========================================
-    const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1Zop57envd5v0yM0Nv6MGN7XhVx4meEACHY9lfpr-xH8/gviz/tq?tqx=out:json&gid=1480282197';
-    const GOOGLE_SHEET_EDIT_URL = 'https://docs.google.com/spreadsheets/d/1Zop57envd5v0yM0Nv6MGN7XhVx4meEACHY9lfpr-xH8/edit?gid=1480282197#gid=1480282197';
+    const GOOGLE_SHEET_ID = '1Zop57envd5v0yM0Nv6MGN7XhVx4meEACHY9lfpr-xH8';
+    const GOOGLE_SHEET_GID = '1480282197';
+    const GOOGLE_SHEET_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:json&gid=${GOOGLE_SHEET_GID}`;
+    const GOOGLE_SHEET_EDIT_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/edit?gid=${GOOGLE_SHEET_GID}#gid=${GOOGLE_SHEET_GID}`;
 
-    // Default Fallback Data matching screenshot exactly
+    // 若欄位標題比對失敗時使用的預設欄位順序（0-based）
+    const DEFAULT_COLUMN_INDEX = { id: 0, title: 1, subtitle: 2, content: 3, category: 4, mode: 5, tools: 6 };
+
+    // 標題比對關鍵字（不分大小寫、去除空白），用來自動辨識 Google Sheet 欄位，
+    // 讓試算表欄位順序改變時網站仍能正確同步
+    const HEADER_ALIASES = {
+      id:       ['編號', '流水號', 'no', 'id'],
+      title:    ['標題', '名稱', '提示詞名稱', '案名', 'title'],
+      subtitle: ['副標題', '子分類', '子標題', 'subtitle'],
+      content:  ['內容', '提示詞內容', '內文', 'prompt', 'content'],
+      category: ['主軸', '分類', '類別', 'category'],
+      mode:     ['模式', 'mode'],
+      tools:    ['工具', 'ai工具', 'ai 工具', 'tools']
+    };
+
+    // Default Fallback Data (Google Sheet 無法讀取時顯示的範例資料)
     const FALLBACK_PROMPTS = [
       {
         id: '049',
@@ -284,179 +348,179 @@
       }
     ];
 
-    // Main Master Options for Filters
-    const CATEGORIES = ['全部', '寫作', '心圖', '示範', '校正', '秘訣', '程式', '筆記', '貼文', '整理', '簡報'];
-    const MODES = ['全部', 'AI 助理', 'AI 協做', 'AI 協思'];
-    const TOOLS = ['全部', 'ChatGPT', 'Gemini Canvas', 'NotebookLM', 'Gemini AI', 'Claude AI'];
-
-    // Active Selection States
+    // Active Selection States（篩選清單改為依實際資料動態產生，避免與試算表內容脫節）
     let promptsData = [...FALLBACK_PROMPTS];
-    let selectedCategory = '筆記'; // Selected by default to match screenshot
+    let currentFiltered = [...FALLBACK_PROMPTS];
+    let CATEGORIES = ['全部'];
+    let MODES = ['全部'];
+    let TOOLS = ['全部'];
+    let selectedCategory = '全部';
     let selectedMode = '全部';
     let selectedTool = '全部';
 
     window.addEventListener('DOMContentLoaded', () => {
+      deriveFilterOptions();
       renderFilterButtons();
-      fetchGoogleSheetData();
+      fetchGoogleSheetData(false);
+      // 每 5 分鐘背景自動同步一次，維持資料即時性
+      setInterval(() => fetchGoogleSheetData(false), 5 * 60 * 1000);
     });
 
+    // 依欄位標題文字找出對應欄位索引，找不到則回傳 -1
+    function findColumnIndex(cols, aliasKey) {
+      const aliases = HEADER_ALIASES[aliasKey];
+      for (let i = 0; i < cols.length; i++) {
+        const label = (cols[i].label || '').toString().trim().toLowerCase();
+        if (!label) continue;
+        if (aliases.some(a => label === a || label.includes(a))) return i;
+      }
+      return -1;
+    }
+
     // Fetch Google Sheet GViz Data
-    async function fetchGoogleSheetData() {
-      const syncBtn = document.getElementById('syncBtn');
+    async function fetchGoogleSheetData(isManual) {
       const syncIcon = document.getElementById('syncIcon');
       const syncStatus = document.getElementById('syncStatus');
 
       syncIcon.classList.add('fa-spin');
-      syncStatus.innerText = '讀取中...';
+      if (isManual) syncStatus.innerText = '讀取中...';
 
       try {
-        const response = await fetch(GOOGLE_SHEET_URL);
+        const response = await fetch(`${GOOGLE_SHEET_URL}&_=${Date.now()}`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const text = await response.text();
 
-        // Extract JSON from Google Viz response wrappers: /*O_o*/ google.visualization.Query.setResponse({...});
-        const jsonMatch = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);/);
-        
-        if (jsonMatch && jsonMatch[1]) {
-          const parsedData = JSON.parse(jsonMatch[1]);
-          const rows = parsedData.table.rows;
+        // Extract JSON from Google Viz response wrapper: /*O_o*/ google.visualization.Query.setResponse({...});
+        const jsonMatch = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);?\s*$/);
+        if (!jsonMatch || !jsonMatch[1]) throw new Error('無法解析 Google Sheet 回傳格式，請確認試算表已設定「知道連結的任何人皆可檢視」');
 
-          if (rows && rows.length > 0) {
-            const loadedPrompts = [];
-
-            rows.forEach((row, idx) => {
-              const cells = row.c || [];
-              const getVal = (i) => (cells[i] && cells[i].v !== null) ? String(cells[i].v).trim() : '';
-
-              // Expected column mapping or flexible dynamic extraction
-              const title = getVal(0) || getVal(1) || `Prompt ${idx + 1}`;
-              const content = getVal(3) || getVal(2) || getVal(1) || '';
-              const category = getVal(4) || '筆記';
-              const mode = getVal(5) || 'AI 助理';
-              const toolStr = getVal(6) || 'ChatGPT,Gemini AI';
-              const subtitle = getVal(2) || '筆記整理';
-
-              if (title && content) {
-                loadedPrompts.push({
-                  id: `sheet-${idx}`,
-                  title: title,
-                  subtitle: subtitle,
-                  mainCategory: category,
-                  mode: mode,
-                  tools: toolStr.split(/[,，\s]+/).filter(Boolean),
-                  content: content
-                });
-              }
-            });
-
-            if (loadedPrompts.length > 0) {
-              promptsData = loadedPrompts;
-              syncStatus.innerText = '已與 Sheet 同步';
-              showToast('成功從 Google Sheet 載入最新提示詞！');
-            } else {
-              useFallback('Sheet 數據格式為空');
-            }
-          } else {
-            useFallback('Sheet 無資料');
-          }
-        } else {
-          useFallback('解析失敗');
+        const parsedData = JSON.parse(jsonMatch[1]);
+        if (parsedData.status === 'error') {
+          const reason = (parsedData.errors && parsedData.errors[0] && parsedData.errors[0].detailed_message) || '試算表回傳錯誤';
+          throw new Error(reason);
         }
+
+        const cols = parsedData.table.cols || [];
+        const rows = parsedData.table.rows || [];
+        if (rows.length === 0) throw new Error('Sheet 目前沒有資料列');
+
+        // 優先以欄位標題自動比對，找不到才退回固定欄位順序
+        const colIndex = {
+          id: findColumnIndex(cols, 'id'),
+          title: findColumnIndex(cols, 'title'),
+          subtitle: findColumnIndex(cols, 'subtitle'),
+          content: findColumnIndex(cols, 'content'),
+          category: findColumnIndex(cols, 'category'),
+          mode: findColumnIndex(cols, 'mode'),
+          tools: findColumnIndex(cols, 'tools'),
+        };
+        Object.keys(colIndex).forEach(k => {
+          if (colIndex[k] === -1) colIndex[k] = DEFAULT_COLUMN_INDEX[k];
+        });
+
+        const loadedPrompts = [];
+        rows.forEach((row, idx) => {
+          const cells = row.c || [];
+          const getVal = (i) => (i >= 0 && cells[i] && cells[i].v !== null && cells[i].v !== undefined) ? String(cells[i].v).trim() : '';
+
+          const title = getVal(colIndex.title) || `Prompt ${idx + 1}`;
+          const content = getVal(colIndex.content);
+          const category = getVal(colIndex.category) || '未分類';
+          const mode = getVal(colIndex.mode) || '未標示';
+          const toolStr = getVal(colIndex.tools);
+          const subtitle = getVal(colIndex.subtitle);
+          const rowId = getVal(colIndex.id) || String(idx + 1).padStart(3, '0');
+
+          if (title && content) {
+            loadedPrompts.push({
+              id: rowId,
+              title: title,
+              subtitle: subtitle,
+              mainCategory: category,
+              mode: mode,
+              tools: toolStr ? toolStr.split(/[,，、\s]+/).filter(Boolean) : [],
+              content: content
+            });
+          }
+        });
+
+        if (loadedPrompts.length === 0) throw new Error('Sheet 數據格式為空，請確認標題與內容欄位皆有值');
+
+        promptsData = loadedPrompts;
+        syncStatus.innerText = '已與 Sheet 同步';
+        updateLastSynced();
+        if (isManual) showToast('成功從 Google Sheet 載入最新提示詞！');
       } catch (err) {
-        console.warn('Google Sheet fetch error or CORS block, using demo data:', err);
-        useFallback('使用預設範例資料');
+        console.warn('Google Sheet fetch error:', err);
+        useFallback();
+        if (isManual) showToast('同步失敗，暫時顯示預設範例資料', true);
       } finally {
         syncIcon.classList.remove('fa-spin');
+        deriveFilterOptions();
+        renderFilterButtons();
         renderCards();
       }
     }
 
-    function useFallback(reason) {
+    function useFallback() {
       promptsData = [...FALLBACK_PROMPTS];
-      const syncStatus = document.getElementById('syncStatus');
-      syncStatus.innerText = '預設模式';
+      document.getElementById('syncStatus').innerText = '預設模式';
+    }
+
+    function updateLastSynced() {
+      const el = document.getElementById('lastSynced');
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      el.innerText = `最後同步 ${hh}:${mm}`;
+    }
+
+    // 依目前資料動態產生篩選選項，避免試算表內容與寫死的清單脫節
+    function deriveFilterOptions() {
+      const cats = new Set(), modes = new Set(), tools = new Set();
+      promptsData.forEach(p => {
+        if (p.mainCategory) cats.add(p.mainCategory);
+        if (p.mode) modes.add(p.mode);
+        (p.tools || []).forEach(t => tools.add(t));
+      });
+      CATEGORIES = ['全部', ...Array.from(cats).sort((a, b) => a.localeCompare(b, 'zh-Hant'))];
+      MODES = ['全部', ...Array.from(modes).sort((a, b) => a.localeCompare(b, 'zh-Hant'))];
+      TOOLS = ['全部', ...Array.from(tools).sort((a, b) => a.localeCompare(b, 'zh-Hant'))];
+      if (!CATEGORIES.includes(selectedCategory)) selectedCategory = '全部';
+      if (!MODES.includes(selectedMode)) selectedMode = '全部';
+      if (!TOOLS.includes(selectedTool)) selectedTool = '全部';
     }
 
     // Render Filters
     function renderFilterButtons() {
-      // 1. Categories
-      const catContainer = document.getElementById('categoryFilterGroup');
-      catContainer.innerHTML = CATEGORIES.map(cat => {
-        const isActive = cat === selectedCategory;
-        return `
-          <button 
-            onclick="setCategory('${cat}')"
-            class="px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-150 ${
-              isActive 
-                ? 'bg-purple-100 text-purple-700 border border-purple-300 font-semibold shadow-xs' 
-                : 'bg-gray-100 hover:bg-gray-200 text-gray-600 border border-transparent'
-            }">
-            ${cat}
-          </button>
-        `;
-      }).join('');
+      const pill = (isActive) => isActive
+        ? 'bg-ink text-gold-light border border-ink font-semibold'
+        : 'bg-white hover:bg-gold-tint text-gray-600 border border-line hover:border-gold-light';
 
-      // 2. Modes
-      const modeContainer = document.getElementById('modeFilterGroup');
-      modeContainer.innerHTML = MODES.map(m => {
-        const isActive = m === selectedMode;
-        return `
-          <button 
-            onclick="setMode('${m}')"
-            class="px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-150 ${
-              isActive 
-                ? 'bg-gray-900 text-white shadow-xs' 
-                : 'bg-gray-100 hover:bg-gray-200 text-gray-600 border border-transparent'
-            }">
-            ${m}
-          </button>
-        `;
-      }).join('');
+      document.getElementById('categoryFilterGroup').innerHTML = CATEGORIES.map(cat => `
+        <button onclick="setCategory('${escapeAttr(cat)}')" class="px-3.5 py-1.5 rounded-sm text-xs font-medium transition-all duration-150 ${pill(cat === selectedCategory)}">
+          ${escapeHtml(cat)}
+        </button>`).join('');
 
-      // 3. AI Tools
-      const toolContainer = document.getElementById('toolFilterGroup');
-      toolContainer.innerHTML = TOOLS.map(t => {
-        const isActive = t === selectedTool;
-        return `
-          <button 
-            onclick="setTool('${t}')"
-            class="px-3.5 py-1.5 rounded-full text-xs font-medium transition-all duration-150 ${
-              isActive 
-                ? 'bg-purple-100 text-purple-700 border border-purple-300 font-semibold shadow-xs' 
-                : 'bg-gray-100 hover:bg-gray-200 text-gray-600 border border-transparent'
-            }">
-            ${t}
-          </button>
-        `;
-      }).join('');
+      document.getElementById('modeFilterGroup').innerHTML = MODES.map(m => `
+        <button onclick="setMode('${escapeAttr(m)}')" class="px-3.5 py-1.5 rounded-sm text-xs font-medium transition-all duration-150 ${pill(m === selectedMode)}">
+          ${escapeHtml(m)}
+        </button>`).join('');
+
+      document.getElementById('toolFilterGroup').innerHTML = TOOLS.map(t => `
+        <button onclick="setTool('${escapeAttr(t)}')" class="px-3.5 py-1.5 rounded-sm text-xs font-medium transition-all duration-150 ${pill(t === selectedTool)}">
+          ${escapeHtml(t)}
+        </button>`).join('');
     }
 
     // Filter Selection Handlers
-    function setCategory(cat) {
-      selectedCategory = cat;
-      renderFilterButtons();
-      renderCards();
-    }
-
-    function setMode(mode) {
-      selectedMode = mode;
-      renderFilterButtons();
-      renderCards();
-    }
-
-    function setTool(tool) {
-      selectedTool = tool;
-      renderFilterButtons();
-      renderCards();
-    }
+    function setCategory(cat) { selectedCategory = cat; renderFilterButtons(); renderCards(); }
+    function setMode(mode) { selectedMode = mode; renderFilterButtons(); renderCards(); }
+    function setTool(tool) { selectedTool = tool; renderFilterButtons(); renderCards(); }
 
     function handleFilterChange() {
       const searchVal = document.getElementById('searchInput').value;
-      const clearBtn = document.getElementById('clearSearch');
-      if (searchVal.length > 0) {
-        clearBtn.classList.remove('hidden');
-      } else {
-        clearBtn.classList.add('hidden');
-      }
+      document.getElementById('clearSearch').classList.toggle('hidden', searchVal.length === 0);
       renderCards();
     }
 
@@ -482,21 +546,10 @@
       const emptyState = document.getElementById('emptyState');
       const searchKeyword = document.getElementById('searchInput').value.trim().toLowerCase();
 
-      // Filter Logic
       const filtered = promptsData.filter(item => {
-        // Category Filter
-        if (selectedCategory !== '全部' && item.mainCategory !== selectedCategory) {
-          return false;
-        }
-        // Mode Filter
-        if (selectedMode !== '全部' && item.mode !== selectedMode) {
-          return false;
-        }
-        // Tool Filter
-        if (selectedTool !== '全部' && (!item.tools || !item.tools.includes(selectedTool))) {
-          return false;
-        }
-        // Search Keyword
+        if (selectedCategory !== '全部' && item.mainCategory !== selectedCategory) return false;
+        if (selectedMode !== '全部' && item.mode !== selectedMode) return false;
+        if (selectedTool !== '全部' && (!item.tools || !item.tools.includes(selectedTool))) return false;
         if (searchKeyword) {
           const titleMatch = item.title.toLowerCase().includes(searchKeyword);
           const contentMatch = item.content.toLowerCase().includes(searchKeyword);
@@ -506,7 +559,9 @@
         return true;
       });
 
-      // Update Counter
+      // 儲存目前篩選結果供 modal / 複製功能以索引取用，避免用 JSON.stringify 塞進 HTML 屬性造成內容含引號時解析錯誤
+      currentFiltered = filtered;
+
       document.getElementById('countNumber').innerText = filtered.length;
 
       if (filtered.length === 0) {
@@ -518,59 +573,53 @@
       emptyState.classList.add('hidden');
       grid.classList.remove('hidden');
 
-      grid.innerHTML = filtered.map(item => {
-        // Construct tag pills
+      grid.innerHTML = filtered.map((item, i) => {
         const tagsHtml = [
-          `<span class="bg-gray-100 text-gray-600 px-2.5 py-0.5 rounded-full text-xs font-medium">${item.mainCategory}</span>`,
-          `<span class="bg-purple-100 text-purple-700 px-2.5 py-0.5 rounded-full text-xs font-medium">${item.mode}</span>`,
-          ...(item.tools || []).map(tool => 
-            `<span class="bg-indigo-50 text-indigo-600 px-2.5 py-0.5 rounded-full text-xs font-medium">${tool}</span>`
+          `<span class="bg-ink text-gold-light px-2.5 py-0.5 rounded-sm text-xs font-medium">${escapeHtml(item.mainCategory)}</span>`,
+          `<span class="border border-gold-light text-gold px-2.5 py-0.5 rounded-sm text-xs font-medium">${escapeHtml(item.mode)}</span>`,
+          ...(item.tools || []).map(tool =>
+            `<span class="bg-paper text-gray-500 px-2.5 py-0.5 rounded-sm text-xs font-medium border border-line">${escapeHtml(tool)}</span>`
           )
         ].join('');
 
         return `
-          <div class="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col overflow-hidden relative border-t-4 border-t-pink-400 group">
-            
-            <!-- Card Body -->
-            <div class="p-5 flex-1 flex flex-col cursor-pointer" onclick='openModal(${JSON.stringify(item)})'>
-              
-              <!-- Tags Header -->
-              <div class="flex flex-wrap gap-1.5 mb-3">
-                ${tagsHtml}
+          <div class="prompt-card bg-white rounded-sm border shadow-sm flex flex-col overflow-hidden relative">
+            <div class="accent-bar absolute left-0 top-0 bottom-0 w-1 bg-gold"></div>
+
+            <div class="p-5 flex-1 flex flex-col cursor-pointer" onclick="openModalByIndex(${i})">
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex flex-wrap gap-1.5">${tagsHtml}</div>
+                <span class="case-no text-xs text-gray-300 font-semibold">No.${escapeHtml(item.id)}</span>
               </div>
 
-              <!-- Subtitle & Main Title -->
-              <div class="text-xs text-gray-400 font-medium mb-0.5">${item.subtitle || '提示詞分類'}</div>
-              <h3 class="text-lg font-bold text-gray-800 mb-3 group-hover:text-purple-700 transition-colors">
-                ${item.title}
+              <div class="eyebrow text-gray-400 uppercase mb-1">${escapeHtml(item.subtitle || '提示詞分類')}</div>
+              <h3 class="text-base font-serif font-bold text-ink mb-3 leading-snug">
+                ${escapeHtml(item.title)}
               </h3>
 
-              <!-- Prompt Text Box -->
-              <div class="bg-gray-50/60 p-3.5 rounded-xl border border-gray-100 text-xs text-gray-600 leading-relaxed custom-scrollbar overflow-y-auto max-h-56 whitespace-pre-wrap font-sans flex-1 select-text">
+              <div class="bg-paper p-3.5 rounded-sm border border-line text-xs text-gray-600 leading-relaxed custom-scrollbar overflow-y-auto max-h-56 whitespace-pre-wrap font-sans flex-1 select-text">
                 ${escapeHtml(item.content)}
               </div>
-
             </div>
 
-            <!-- Card Bottom Actions Bar -->
             <div class="px-5 pb-5 pt-2 flex items-center gap-2">
-              <button 
-                onclick='copyPromptText(${JSON.stringify(item.content)})'
-                class="flex-1 bg-brand-600 hover:bg-brand-700 active:scale-[0.98] text-white rounded-xl py-2.5 px-4 text-xs font-semibold shadow-xs flex items-center justify-center gap-2 transition-all">
+              <button
+                onclick="event.stopPropagation(); copyPromptByIndex(${i})"
+                class="flex-1 bg-ink hover:bg-navy active:scale-[0.98] text-gold-light rounded-sm py-2.5 px-4 text-xs font-semibold flex items-center justify-center gap-2 transition-all">
                 <i class="fa-regular fa-copy text-sm"></i>
                 複製 Prompt
               </button>
-              
-              <a 
+
+              <a
                 href="${GOOGLE_SHEET_EDIT_URL}"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="p-2.5 border border-gray-200 hover:border-amber-300 rounded-xl text-amber-500 hover:text-amber-600 hover:bg-amber-50 active:scale-95 transition-all flex items-center justify-center"
+                onclick="event.stopPropagation()"
+                class="p-2.5 border border-line hover:border-gold-light rounded-sm text-gold hover:text-gold-light hover:bg-gold-tint active:scale-95 transition-all flex items-center justify-center"
                 title="開啟 Google 試算表進行編輯">
                 <i class="fa-solid fa-pencil text-sm"></i>
               </a>
             </div>
-
           </div>
         `;
       }).join('');
@@ -579,44 +628,44 @@
     // Copy function using fallback execCommand for iframe safety
     function copyPromptText(text) {
       if (!text) return;
-
       const textarea = document.createElement('textarea');
       textarea.value = text;
       textarea.style.position = 'fixed';
       textarea.style.opacity = '0';
       document.body.appendChild(textarea);
       textarea.select();
-
       try {
         document.execCommand('copy');
         showToast('Prompt 已成功複製到剪貼簿！');
       } catch (err) {
-        showToast('複製失敗，請手動複製內容');
+        showToast('複製失敗，請手動複製內容', true);
       } finally {
         document.body.removeChild(textarea);
       }
     }
 
-    // Modal Control
-    let currentModalItem = null;
+    function copyPromptByIndex(i) {
+      const item = currentFiltered[i];
+      if (item) copyPromptText(item.content);
+    }
 
-    function openModal(item) {
-      currentModalItem = item;
+    // Modal Control
+    function openModalByIndex(i) {
+      const item = currentFiltered[i];
+      if (!item) return;
+
       document.getElementById('modalCategory').innerText = item.subtitle || item.mainCategory;
       document.getElementById('modalTitle').innerText = item.title;
       document.getElementById('modalContent').value = item.content;
 
-      // Modal tags
-      const modalTags = document.getElementById('modalTags');
-      modalTags.innerHTML = [
-        `<span class="bg-gray-100 text-gray-600 px-2.5 py-0.5 rounded-full text-xs font-medium">${item.mainCategory}</span>`,
-        `<span class="bg-purple-100 text-purple-700 px-2.5 py-0.5 rounded-full text-xs font-medium">${item.mode}</span>`,
-        ...(item.tools || []).map(t => `<span class="bg-indigo-50 text-indigo-600 px-2.5 py-0.5 rounded-full text-xs font-medium">${t}</span>`)
+      document.getElementById('modalTags').innerHTML = [
+        `<span class="bg-ink text-gold-light px-2.5 py-0.5 rounded-sm text-xs font-medium">${escapeHtml(item.mainCategory)}</span>`,
+        `<span class="border border-gold-light text-gold px-2.5 py-0.5 rounded-sm text-xs font-medium">${escapeHtml(item.mode)}</span>`,
+        ...(item.tools || []).map(t => `<span class="bg-paper text-gray-500 px-2.5 py-0.5 rounded-sm text-xs font-medium border border-line">${escapeHtml(t)}</span>`)
       ].join('');
 
       const modal = document.getElementById('promptModal');
       const container = document.getElementById('modalContainer');
-
       modal.classList.remove('pointer-events-none', 'opacity-0');
       container.classList.remove('scale-95');
       container.classList.add('scale-100');
@@ -625,7 +674,6 @@
     function closeModal() {
       const modal = document.getElementById('promptModal');
       const container = document.getElementById('modalContainer');
-
       modal.classList.add('opacity-0', 'pointer-events-none');
       container.classList.remove('scale-100');
       container.classList.add('scale-95');
@@ -639,20 +687,20 @@
 
     // Toast Alert
     let toastTimer;
-    function showToast(message) {
+    function showToast(message, isError) {
       const toast = document.getElementById('toast');
       const toastMsg = document.getElementById('toastMsg');
-
       toastMsg.innerText = message;
+      toast.classList.toggle('bg-ink', !isError);
+      toast.classList.toggle('bg-red-900', !!isError);
       toast.classList.remove('translate-y-10', 'opacity-0', 'pointer-events-none');
-
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => {
         toast.classList.add('translate-y-10', 'opacity-0', 'pointer-events-none');
-      }, 2500);
+      }, 2800);
     }
 
-    // Helper HTML Escape
+    // Helper: HTML Escape（顯示用）
     function escapeHtml(str) {
       if (!str) return '';
       return str
@@ -661,6 +709,11 @@
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+    }
+
+    // Helper: 用於嵌入 HTML 屬性內的字串（避免引號提前中斷屬性）
+    function escapeAttr(str) {
+      return escapeHtml(str).replace(/`/g, '&#096;');
     }
   </script>
 </body>
